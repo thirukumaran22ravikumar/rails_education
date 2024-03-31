@@ -8,4 +8,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "books#index"
+  get '/example', to: 'example#some_action'
 end

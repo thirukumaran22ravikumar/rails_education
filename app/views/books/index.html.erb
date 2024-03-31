@@ -1,5 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
+
+
 <h1>Books</h1>
 
 <div id="books">
@@ -9,6 +11,8 @@
       <%= link_to "Show this book", book %>
     </p>
   <% end %>
+
+  <%= generate_table([['Name', 'Age'], ['John', 30], ['Alice', 25]]) %>
 </div>
 
 <%= link_to "New book", new_book_path %>
