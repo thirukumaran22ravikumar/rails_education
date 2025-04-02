@@ -1,0 +1,97 @@
+<h1>Chat Room: <%= @chat_room.name %></h1>
+
+<!-- Create New Room Button -->
+<form action="<%= chat_rooms_path %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <button type="submit">Create New Room</button>
+</form>
+
+
+<!-- Messages Display -->
+<div id="messages" data-chat-room-id="<%= @chat_room.id %>">
+  <% @chat_room.messages.each do |message| %>
+    <p><strong>User:</strong> <%= message.content %></p>
+  <% end %>
+</div>
+
+<!-- Message Input Form -->
+<form id="message-form">
+  <input type="text" id="message-input" placeholder="Type a message..." required>
+  <button type="submit">Send</button>
+</form>
+
+
+<!-- Include JavaScript for Action Cable -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const chatRoomId = <%= @chat_room.id %>;
+    console.log("✅ ChatRoom ID:", chatRoomId);
+
+    if (!window.consumer) {
+      console.error("❌ Consumer is not defined. Check if channels/consumer.js is loaded.");
+      return;
+    }
+
+    // ✅ Ensure the message form exists before attaching the event listener
+    const messageForm = document.getElementById("message-form");
+    const messageInput = document.getElementById("message-input");
+    const messagesContainer = document.getElementById("messages");
+
+    if (!messageForm || !messageInput || !messagesContainer) {
+      console.error("❌ Missing required DOM elements!");
+      return;
+    }
+
+    // ✅ Subscribe to ActionCable ChatRoomChannel
+    window.chatRoomChannel = window.consumer.subscriptions.create(
+      { channel: "ChatRoomChannel", room_id: chatRoomId },  
+      {
+        connected() {
+          console.log(`✅ Connected to ChatRoomChannel ${chatRoomId}`);
+        },
+        received(data) {
+          console.log("📩 New Message:", data.message);
+
+          // ✅ Append new message to the chat without refreshing
+          const newMessage = document.createElement("p");
+          newMessage.innerHTML = `<strong>User:</strong> ${data.message}`;
+          messagesContainer.appendChild(newMessage);
+        }
+      }
+    );
+
+    // ✅ Handle Form Submission
+    messageForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if (!message) return; // Prevent sending empty messages
+
+      console.log("🚀 Sending message:", message);
+
+      fetch(`/chat_rooms/${chatRoomId}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ message: { content: message } })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("✅ Message Sent Response:", data);
+          if (data.status === "error") {
+            console.error("❌ Error sending message:", data.errors);
+          }
+        })
+        .catch(error => console.error("❌ Network Error:", error));
+
+      messageInput.value = ""; // ✅ Clear input field after sending
+    });
+  });
+
+
+
+  
+</script>
+
+

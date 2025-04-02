@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-	has_one :profile
+	has_one :profile, foreign_key: 'user_id'
 	# validates :name, uniqueness: true
 	# validates :name, uniqueness: true
 	# validate :must_be_available

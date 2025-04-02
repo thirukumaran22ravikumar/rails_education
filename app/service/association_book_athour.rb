@@ -8,42 +8,43 @@ class AssociationBookAthour
 		puts table_books.inspect+"------------------------book---------------"
 
 
+		# Create an author
 		author = Athour.create(name: "ABC", about: "Author of the Harry Potter series")
 
-		puts table_athour.inspect+"---------------------after create------------------"
+		# Inspect the author
+		puts author.inspect + "---------------------after create------------------"
 
+		# Create books associated with the author
+		book1 = author.books.create(name: "Harry Potter", price: 109, about: "First book in series")
+		puts book1.inspect + "------------------------first book---------------"
 
-		author.books.create(name: "Harry Potter ", price: 109, about: "First book in teries")
-		
-		puts table_books.inspect+"------------------------book---------------"
-
-		author.books.create(name: "Harry Potter s", price: 129, about: "Second book iner series")
-
+		book2 = author.books.create(name: "Harry Potter s", price: 129, about: "Second book in series")
+		puts book2.inspect + "------------------------second book--------------"
 
 		# Accessing author's books
 		author.books.each do |book|
 		  puts "#{author.name} wrote #{book.name}"
 		end
 
-		# delete -----------------------------------------------------------------------------------
+		# # delete -----------------------------------------------------------------------------------
 
 
-		names = Athour.where(id: 2).first
-		puts names.inspect+"----------------------------------------------------"
-		puts names.books.inspect
+		# names = Athour.where(id: 2).first
+		# puts names.inspect+"----------------------------------------------------"
+		# puts names.books.inspect
 
-		names.destroy
-		names.books.destroy_all
+		# names.destroy
+		# names.books.destroy_all
 
 
-		has_one --------------------------------------------------------------------------------------
+		# # has_one --------------------------------------------------------------------------------------
 
-		user = User.create(name: "guruss")
-		# user.create_profile(bio: "Hello, I'm John")
-		puts user.valid?  # false
-		puts user.errors.full_messages 
-		# Accessing user's profile
-		# puts user.profile.bio
+		# user = User.create(name: "guruss")
+		# # user.create_profile(bio: "Hello, I'm John")
+		# puts user.valid?  # false
+		# puts user.errors.full_messages 
+		# # Accessing user's profile
+		# # puts user.profile.bio
 
 
 	end

@@ -95,7 +95,7 @@ class IncludeExtandPrepend
 	end
 
 	class MyClass
-	  prepend B
+	  include B
 	  def hello
 	    puts "Hello from MyClass"
 	  end
